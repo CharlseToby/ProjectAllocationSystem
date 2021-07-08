@@ -1,0 +1,19 @@
+﻿@using ProjectAllocationSystem.ViewModels.Lecturer
+@model StudentProfileVM
+
+@{
+    ViewData["Title"] = "Student Profile";
+    string projectPreferences = string.Join(",", Model.ApplicationUser.ProjectPreferences);
+}
+
+<div class="container">
+    <div class="text-center">
+        <h5>Student Info</h5>
+        <br />
+
+        <p><span class="font-weight-bold">Name:</span> @($"{Model.ApplicationUser.FirstName} {Model.ApplicationUser.LastName}")</p>
+        <p><span class="font-weight-bold">School ID:</span> @($"{Model.ApplicationUser.SchoolId}")</p>
+        <p><span class="font-weight-bold">Project Preferences:</span> @projectPreferences</p>
+        <p><span class="font-weight-bold">Assigned Supervisor:</span>@Html.DisplayFor(_ => Model.AssignedToLecturer)</p>
+    </div>        
+</div>

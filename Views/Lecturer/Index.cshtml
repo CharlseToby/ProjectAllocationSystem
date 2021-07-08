@@ -1,0 +1,62 @@
+﻿@using ProjectAllocationSystem.ViewModels.Lecturer
+@model IndexVM
+
+@{
+    ViewData["Title"] = "Lecturer";
+}
+
+<div class="row">
+    <div class="text-center">
+        <span>
+            <a class="btn btn-link">My Students</a>
+        </span>
+    </div>
+
+    <h3>Waiting List</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    School ID
+                </th>
+                <th>
+                    Preference Match
+                </th>
+                <th>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var student in Model.WaitingStudents)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Student.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Student.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.Student.SchoolId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => student.PreferenceMatch)
+                    </td>
+                    <td>
+                        <a asp-action="StudentProfile" asp-route-id="@student.Student.Id" class="btn btn-link">View Student</a>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary">Choose</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>    
+</div>

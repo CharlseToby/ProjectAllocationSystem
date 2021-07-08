@@ -1,0 +1,30 @@
+﻿@using ProjectAllocationSystem.ViewModels.Admin
+@model IndexVM
+
+@{
+    ViewData["Title"] = "Admin";
+}
+
+
+<div class="row">
+    <div class="text-center">
+        <span>
+            <a class="btn btn-primary">Add User</a>
+            <a class="btn btn-primary">Bulk Add Users</a>
+            <a class="btn btn-primary">Add New Preference</a>
+        </span>
+    </div>
+
+    <h5>Project Preferences:</h5>
+    <ul>
+        @for (int i = 0; i < Model.Preferences.Count; i++)
+        {
+            <li>
+                <span>
+                    @Model.Preferences[i]
+                    <button class="btn btn-danger">Delete</button>
+                </span>
+            </li>
+        }
+    </ul>
+</div>
