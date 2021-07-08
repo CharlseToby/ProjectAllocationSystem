@@ -10,9 +10,9 @@ namespace ProjectAllocationSystem.Models
     {
         public int Id { get; set; }
 
-        public int LecturerId { get; set; }
+        public string LecturerId { get; set; }
 
-        public int StudentId { get; set; }
+        public string StudentId { get; set; }
 
         public List<string> Chat { get; set; }
     }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,12 +31,54 @@ namespace ProjectAllocationSystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+            {
+                // Parse connection URL to connection string for Npgsql
+                string connectionString = Configuration["DATABASE_URL"];
+                connectionString = connectionString.Replace("postgres://", string.Empty);
+
+                var pgUserPass = connectionString.Split("@")[0];
+                var pgHostPortDb = connectionString.Split("@")[1];
+                var pgHostPort = pgHostPortDb.Split("/")[0];
+
+                var pgDb = pgHostPortDb.Split("/")[1];
+                var pgUser = pgUserPass.Split(":")[0];
+                var pgPass = pgUserPass.Split(":")[1];
+                var pgHost = pgHostPort.Split(":")[0];
+                var pgPort = pgHostPort.Split(":")[1];
+
+                connectionString = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}";
+                connectionString += ";sslmode=Require;Trust Server Certificate=true;";
+
+                options.UseLazyLoadingProxies();
+                options.UseNpgsql(connectionString);
+            });
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            #region Replacement for AddDefaultIdentity excluding DefaultUI
+            services.AddMvc();
+            services.AddAuthentication(o =>
+            {
+                o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+            .AddIdentityCookies(o => { });
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Stores.MaxLengthForKeys = 128;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            })
+               .AddEntityFrameworkStores<ApplicationDbContext>()
+               .AddDefaultTokenProviders()
+               .AddSignInManager();
+            services.AddTransient<IEmailSender, EmailSender>();
+            #endregion
+            
             services.AddControllersWithViews();
 
             services.AddScoped<AdminService>();

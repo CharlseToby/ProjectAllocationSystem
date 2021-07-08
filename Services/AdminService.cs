@@ -109,20 +109,16 @@ namespace ProjectAllocationSystem.Services
             return new OperationResult("Duplicate entries not allowed");
         }
         
+        //TODO: Test how delete behaves in DB when users are added
         public async Task<OperationResult> RemovePreference(string preference)
         {
-            if(_dbContext.ProjectPreferences.FirstOrDefault(x => x.Preference == preference.ToUpper()) is null)
+            var pref = _dbContext.ProjectPreferences.FirstOrDefault(x => x.Preference == preference);
+            if(pref.ApplicationUsers.Count < 1)
             {
-                _dbContext.ProjectPreferences.Add(new ProjectPreference
-                {
-                    Preference = preference
-                });
+                _dbContext.ProjectPreferences.Remove(pref);
                 await _dbContext.SaveChangesAsync();
-                return new OperationResult(true);
             }
-            return new OperationResult("Duplicate entries not allowed");
+            return new OperationResult("Users are already have this preference");
         }
-
-
     }
 }

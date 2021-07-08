@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ProjectAllocationSystem.Models;
 using System;
@@ -12,14 +13,36 @@ namespace ProjectAllocationSystem.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, 
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
+            _signInManager = signInManager;
+            _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if(_signInManager.IsSignedIn(User))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if(user.Role == Role.Admin)
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
+                else if(user.Role == Role.Lecturer)
+                {
+                    return RedirectToAction("Index", "Lecturer");
+                }
+                else if(user.Role == Role.Student)
+                {
+                    return RedirectToAction("Index", "Student");
+                }
+            }
             return View();
         }
 
