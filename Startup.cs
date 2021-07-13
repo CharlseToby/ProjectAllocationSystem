@@ -47,7 +47,7 @@ namespace ProjectAllocationSystem
                 var pgPort = pgHostPort.Split(":")[1];
 
                 connectionString = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}";
-                connectionString += ";sslmode=Require;Trust Server Certificate=true;";
+                //connectionString += ";sslmode=Require;Trust Server Certificate=true;";
 
                 options.UseLazyLoadingProxies();
                 options.UseNpgsql(connectionString);
@@ -57,12 +57,12 @@ namespace ProjectAllocationSystem
 
             #region Replacement for AddDefaultIdentity excluding DefaultUI
             services.AddMvc();
-            services.AddAuthentication(o =>
-            {
-                o.DefaultScheme = IdentityConstants.ApplicationScheme;
-                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
-            .AddIdentityCookies(o => { });
+            //services.AddAuthentication(o =>
+            //{
+            //    o.DefaultScheme = IdentityConstants.ApplicationScheme;
+            //    o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            //})
+            //.AddIdentityCookies(o => { });
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Stores.MaxLengthForKeys = 128;

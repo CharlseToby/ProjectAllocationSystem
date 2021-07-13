@@ -32,11 +32,11 @@ namespace ProjectAllocationSystem.Services
             {
                 FirstName = firstName,
                 LastName = lastName,
+                UserName = $"{firstName}.{lastName}",
                 SchoolId = schoolId,
-                Role = (Role) Enum.Parse(typeof(Role), role)
+                Role = (Role)Enum.Parse(typeof(Role), role)
             };
-
-             var result = await _userManager.CreateAsync(user, Constants.DefaultPassword);
+            var result = await _userManager.CreateAsync(user, Constants.DefaultPassword);
 
             if (result.Succeeded)
             {
@@ -67,12 +67,12 @@ namespace ProjectAllocationSystem.Services
             //    stream.Close();
             //}
             var users = new List<ApplicationUser>();
-            
+
             foreach (var userDTO in applicationUsersDTO)
             {
-                users.Add(userDTO.ConvertToModel());                
+                users.Add(userDTO.ConvertToModel());
             }
-            
+
             foreach (var user in users)
             {
                 string securityStamp = Guid.NewGuid().ToString("N");
@@ -97,7 +97,7 @@ namespace ProjectAllocationSystem.Services
 
         public async Task<OperationResult> AddPreference(string preference)
         {
-            if(_dbContext.ProjectPreferences.FirstOrDefault(x => x.Preference == preference.ToUpper()) is null)
+            if (_dbContext.ProjectPreferences.FirstOrDefault(x => x.Preference == preference.ToUpper()) is null)
             {
                 _dbContext.ProjectPreferences.Add(new ProjectPreference
                 {
@@ -108,12 +108,12 @@ namespace ProjectAllocationSystem.Services
             }
             return new OperationResult("Duplicate entries not allowed");
         }
-        
+
         //TODO: Test how delete behaves in DB when users are added
         public async Task<OperationResult> RemovePreference(string preference)
         {
             var pref = _dbContext.ProjectPreferences.FirstOrDefault(x => x.Preference == preference);
-            if(pref.ApplicationUsers.Count < 1)
+            if (pref.ApplicationUsers.Count < 1)
             {
                 _dbContext.ProjectPreferences.Remove(pref);
                 await _dbContext.SaveChangesAsync();

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectAllocationSystem.Data;
+using ProjectAllocationSystem.Models;
 using ProjectAllocationSystem.Services;
 using ProjectAllocationSystem.ViewModels.Admin;
 using System;
@@ -32,5 +33,36 @@ namespace ProjectAllocationSystem.Controllers
 
             return View(vm);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUser(string firstName, string lastName, string schoolId, string role)
+        {
+            // TODO: Model Validation
+            var result =  await _adminService.CreateUser(firstName, lastName, schoolId, role);
+
+
+            var preferences = await _dbContext.ProjectPreferences.Select(x => x.Preference).ToListAsync();
+            var vm = new IndexVM
+            {
+                Preferences = preferences
+            };
+            return View("Index", vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPreference(string preference)
+        {
+            // Model Validation
+            var result = await _adminService.AddPreference(preference);
+
+            var preferences = await _dbContext.ProjectPreferences.Select(x => x.Preference).ToListAsync();
+            var vm = new IndexVM
+            {
+                Preferences = preferences
+            };
+            return View("Index", vm);
+        }
+
+
     }
 }

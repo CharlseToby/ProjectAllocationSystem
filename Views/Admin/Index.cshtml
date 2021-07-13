@@ -6,25 +6,99 @@
 }
 
 
-<div class="row">
+<div class="container">
     <div class="text-center">
+        <div asp-validation-summary="All" class="text-danger"></div>
         <span>
-            <a class="btn btn-primary">Add User</a>
-            <a class="btn btn-primary">Bulk Add Users</a>
-            <a class="btn btn-primary">Add New Preference</a>
+            <a data-toggle="modal" data-target="#addUserModal" class="btn btn-primary">Add User</a>
+            <a data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">Bulk Add Users</a>
+            <a data-toggle="modal" data-target="#addPrefModal" class="btn btn-primary">Add New Preference</a>
         </span>
     </div>
 
-    <h5>Project Preferences:</h5>
-    <ul>
-        @for (int i = 0; i < Model.Preferences.Count; i++)
-        {
-            <li>
-                <span>
-                    @Model.Preferences[i]
-                    <button class="btn btn-danger">Delete</button>
-                </span>
-            </li>
-        }
-    </ul>
+    <br/>
+
+    <div class="text-center">
+        <h5>Project Preferences:</h5>
+        <ul>
+            @for (int i = 0; i < Model.Preferences.Count; i++)
+            {
+                <li>
+                    <span class="mb-2">
+                        @Model.Preferences[i]
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </span>
+                </li>
+            }
+        </ul>
+    </div>
 </div>
+
+<form enctype="multipart/form-data" method="post" asp-action="AddUser">
+    <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Create a new user</p>
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">First Name</label>
+                        <input type="text" class="form-control" name="firstName" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="lastName">Name</label>
+                        <input type="text" class="form-control" name="lastName" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="schoolId">School ID</label>
+                        <input type="text" class="form-control" name="schoolId" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="role">Role</label>
+                        <select>
+                            <option value="Admin">Admin</option>
+                            <option value="Lecturer">Lecturer</option>
+                            <option value="Student">Student</option>
+                        </select>
+                    </div>                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="addUserSubmit" type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form enctype="multipart/form-data" method="post" asp-action="AddPreference">
+    <div class="modal fade" id="addPrefModal" tabindex="-1" role="dialog" aria-labelledby="addPrefModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPrefModalLabel">Add Project Preference</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Add a Project Idea or Preference</p>
+                    <div class="form-group">
+                        <label class="form-label" for="firstName">Preference</label>
+                        <input type="text" class="form-control" name="preference" />
+                    </div>                                        
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="addPrefSubmit" type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
