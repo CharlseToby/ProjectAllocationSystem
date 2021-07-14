@@ -30,7 +30,16 @@ namespace ProjectAllocationSystem.Controllers
             var lecturer = await _userManager.GetUserAsync(User);            
 
             var assignedStudentsId = _dbContext.LecturerStudentNodes.Select(x => x.StudentId).ToList();
-            var unassignedStudents = _dbContext.Users.Where(x => !assignedStudentsId.Contains(x.Id))
+            var assignedStudents = await _dbContext.Users.Where(x => assignedStudentsId.Contains(x.Id))
+                .Select(y => new AssignedStudent
+                {
+                    Student = y,
+                    PreferenceMatch = y.ProjectPreferences.Intersect(lecturer.ProjectPreferences)
+                    .Select(x => x.Preference)
+                    .ToList()
+                })
+                .ToListAsync();
+            /*var unassignedStudents = _dbContext.Users.Where(x => !assignedStudentsId.Contains(x.Id))
                 .Where(x => x.ProjectPreferences
                 .Intersect(lecturer.ProjectPreferences)
                 .Any())
@@ -41,11 +50,11 @@ namespace ProjectAllocationSystem.Controllers
                     .Select(x => x.Preference)
                     .ToList()
                 })
-                .ToList();
+                .ToList();*/
 
             var vm = new IndexVM
             {
-                WaitingStudents = unassignedStudents
+                AssignedStudents = assignedStudents
             };
 
             return View(vm);
@@ -63,23 +72,6 @@ namespace ProjectAllocationSystem.Controllers
             };
 
             return View(vm);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> AssignedStudents()
-        {
-            var lecturer = await _userManager.GetUserAsync(User);
-            var lecturerStudentsIds = await _dbContext.LecturerStudentNodes.Where(x => x.LecturerId == lecturer.Id)
-                .Select(x => x.StudentId)
-                .ToListAsync();
-            var lecturerStudents = await _dbContext.Users.Where(x => lecturerStudentsIds.Contains(x.Id)).ToListAsync();
-
-            var vm = new AssignedStudentsVM
-            {
-                AssignedStudents = lecturerStudents
-            };
-
-            return View(vm);
-        }
+        }        
     }
 }
