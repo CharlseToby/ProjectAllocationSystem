@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectAllocationSystem.Data;
 using ProjectAllocationSystem.Models;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ProjectAllocationSystem.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly AdminService _adminService;
@@ -23,6 +25,7 @@ namespace ProjectAllocationSystem.Controllers
             _dbContext = dbContext;
         }
 
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var preferences = await _dbContext.ProjectPreferences.Select(x => x.Preference).ToListAsync();
@@ -38,29 +41,23 @@ namespace ProjectAllocationSystem.Controllers
         public async Task<IActionResult> AddUser(string firstName, string lastName, string schoolId, string role)
         {
             // TODO: Model Validation
-            var result =  await _adminService.CreateUser(firstName, lastName, schoolId, role);
-
-
-            var preferences = await _dbContext.ProjectPreferences.Select(x => x.Preference).ToListAsync();
-            var vm = new IndexVM
-            {
-                Preferences = preferences
-            };
-            return View("Index", vm);
+            await _adminService.CreateUser(firstName, lastName, schoolId, role);            
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> AddPreference(string preference)
         {
-            // Model Validation
-            var result = await _adminService.AddPreference(preference);
+            // TODO: Model Validation
+            await _adminService.AddPreference(preference);
+            return RedirectToAction("Index");
+        }
 
-            var preferences = await _dbContext.ProjectPreferences.Select(x => x.Preference).ToListAsync();
-            var vm = new IndexVM
-            {
-                Preferences = preferences
-            };
-            return View("Index", vm);
+        [HttpPost]
+        public async Task<IActionResult> DeletePreference(string preference)
+        {
+            await _adminService.RemovePreference(preference);
+            return RedirectToAction("Index");
         }
 
 

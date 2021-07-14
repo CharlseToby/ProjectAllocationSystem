@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 namespace ProjectAllocationSystem.ViewModels.Lecturer
 {
     public record IndexVM
-    {        
-        public List<WaitingStudent> WaitingStudents { get; set; }
+    {                
+        public List<AssignedStudent> AssignedStudents { get; set; }
     }
 
-    public record WaitingStudent
+    public record AssignedStudent
     {
         public ApplicationUser Student { get; set; }
 

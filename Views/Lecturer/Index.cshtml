@@ -12,7 +12,7 @@
         </span>
     </div>
 
-    <h3>Waiting List</h3>
+    <h3>Assigned Students</h3>
     <table class="table">
         <thead>
             <tr>
@@ -34,7 +34,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(var student in Model.WaitingStudents)
+            @foreach(var student in Model.AssignedStudents)
             {
                 <tr>
                     <td>
