@@ -27,18 +27,22 @@ namespace ProjectAllocationSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var lecturer = await _userManager.GetUserAsync(User);            
+            var lecturer = await _userManager.GetUserAsync(User);
 
             var assignedStudentsId = _dbContext.LecturerStudentNodes.Select(x => x.StudentId).ToList();
-            var assignedStudents = await _dbContext.Users.Where(x => assignedStudentsId.Contains(x.Id))
-                .Select(y => new AssignedStudent
-                {
-                    Student = y,
-                    PreferenceMatch = y.ProjectPreferences.Intersect(lecturer.ProjectPreferences)
+            var assignedStudents = _dbContext.Users
+                .Where(x => x.Role == Role.Student)
+                .Where(x => assignedStudentsId.Contains(x.Id))
+                .ToList();
+
+            var assignedStudentsModel = assignedStudents.Select(y => new AssignedStudent
+            {
+                Student = y,
+                PreferenceMatch = y.ProjectPreferences.Intersect(lecturer.ProjectPreferences)
                     .Select(x => x.Preference)
                     .ToList()
-                })
-                .ToListAsync();
+            }).ToList();
+
             /*var unassignedStudents = _dbContext.Users.Where(x => !assignedStudentsId.Contains(x.Id))
                 .Where(x => x.ProjectPreferences
                 .Intersect(lecturer.ProjectPreferences)
@@ -54,7 +58,7 @@ namespace ProjectAllocationSystem.Controllers
 
             var vm = new IndexVM
             {
-                AssignedStudents = assignedStudents
+                AssignedStudents = assignedStudentsModel
             };
 
             return View(vm);
@@ -72,6 +76,6 @@ namespace ProjectAllocationSystem.Controllers
             };
 
             return View(vm);
-        }        
+        }
     }
 }

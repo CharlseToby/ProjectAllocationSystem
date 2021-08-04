@@ -47,25 +47,7 @@ namespace ProjectAllocationSystem.Services
         }
 
         public async Task<OperationDataResult<List<ApplicationUser>>> BulkCreateUsers(List<ApplicationUserDTO> applicationUsersDTO)
-        {
-            //using (var stream = file.OpenReadStream())
-            //{
-            //    List<Contestant> contestants;
-            //    string wrongPositions = "";
-            //    var reader = new StreamReader(stream);
-            //    var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-            //    {
-            //        TrimOptions = TrimOptions.Trim,
-            //        HeaderValidated = (x) => { },
-            //        MissingFieldFound = null
-            //    };
-
-            //    using (var csv = new CsvReader(reader, config))
-            //    {
-            //        contestants = csv.GetRecords<Contestant>().ToList();
-            //    }
-            //    stream.Close();
-            //}
+        {            
             var users = new List<ApplicationUser>();
 
             foreach (var userDTO in applicationUsersDTO)

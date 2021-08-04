@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProjectAllocationSystem.Data;
+using ProjectAllocationSystem.Extensions;
 using ProjectAllocationSystem.Models;
 using ProjectAllocationSystem.Services;
 using System;
@@ -53,6 +54,8 @@ namespace ProjectAllocationSystem
                 options.UseNpgsql(connectionString);
             });
 
+            services.AddHostedService<ProjectAllocator>();
+
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             #region Replacement for AddDefaultIdentity excluding DefaultUI
@@ -87,8 +90,16 @@ namespace ProjectAllocationSystem
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+            ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager,
+            AdminService adminService)
         {
+            if(!Configuration.GetValue<bool>("DB_MIGRATED", true))
+            {
+                dbContext.Database.Migrate();
+                userManager.SeedDatabase(adminService).GetAwaiter().GetResult();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

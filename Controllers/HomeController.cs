@@ -27,16 +27,6 @@ namespace ProjectAllocationSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //var newser = new ApplicationUser
-            //{
-            //    FirstName = "Admin",
-            //    LastName = "Admin",
-            //    SchoolId = "admin",
-            //    UserName = "admin",
-            //    Role = Role.Admin,                
-            //};
-            //await _userManager.CreateAsync(newser, Constants.DefaultPassword);
-
             if(_signInManager.IsSignedIn(User))
             {
                 var user = await _userManager.GetUserAsync(User);

@@ -5,58 +5,62 @@
     ViewData["Title"] = "Lecturer";
 }
 
-<div class="row">
+<div class="container">
     <div class="text-center">
-        <span>
-            <a class="btn btn-link">My Students</a>
-        </span>
-    </div>
-
-    <h3>Assigned Students</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    First Name
-                </th>
-                <th>
-                    Last Name
-                </th>
-                <th>
-                    School ID
-                </th>
-                <th>
-                    Preference Match
-                </th>
-                <th>
-
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var student in Model.AssignedStudents)
-            {
+        <div class="text-center">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <span>                
+                <a data-toggle="modal" data-target="#addPrefModal" class="btn btn-primary">Modify Preferences</a>
+            </span>
+        </div>
+        <h2 class="m-3">Lecturer's Portal</h2>
+        <br />
+        <h5>Assigned Students</h5>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => student.Student.FirstName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => student.Student.LastName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => student.Student.SchoolId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => student.PreferenceMatch)
-                    </td>
-                    <td>
-                        <a asp-action="StudentProfile" asp-route-id="@student.Student.Id" class="btn btn-link">View Student</a>
-                    </td>
-                    <td>
-                        <button class="btn btn-primary">Choose</button>
-                    </td>
+                    <th>
+                        First Name
+                    </th>
+                    <th>
+                        Last Name
+                    </th>
+                    <th>
+                        School ID
+                    </th>
+                    <th>
+                        Preference Match
+                    </th>
+                    <th>
+
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>    
+            </thead>
+            <tbody>
+                @foreach (var student in Model.AssignedStudents)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => student.Student.FirstName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => student.Student.LastName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => student.Student.SchoolId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => student.PreferenceMatch)
+                        </td>
+                        <td>
+                            <a asp-action="StudentProfile" asp-route-id="@student.Student.Id" class="btn btn-link">View Student</a>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary">Choose</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
