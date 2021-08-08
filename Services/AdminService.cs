@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ProjectAllocationSystem.Data;
 using ProjectAllocationSystem.DTOs;
 using ProjectAllocationSystem.Models;
@@ -28,11 +29,12 @@ namespace ProjectAllocationSystem.Services
 
         public async Task<OperationDataResult<ApplicationUser>> CreateUser(string firstName, string lastName, string schoolId, string role)
         {
+            int appUsersCount = await _dbContext.Users.CountAsync();
             var user = new ApplicationUser
             {
                 FirstName = firstName,
                 LastName = lastName,
-                UserName = $"{firstName}.{lastName}",
+                UserName = $"{firstName}.{lastName}{appUsersCount + 1}",
                 SchoolId = schoolId,
                 Role = (Role)Enum.Parse(typeof(Role), role)
             };
@@ -49,6 +51,7 @@ namespace ProjectAllocationSystem.Services
         public async Task<OperationDataResult<List<ApplicationUser>>> BulkCreateUsers(List<ApplicationUserDTO> applicationUsersDTO)
         {            
             var users = new List<ApplicationUser>();
+            int appUsersCount = await _dbContext.Users.CountAsync();
 
             foreach (var userDTO in applicationUsersDTO)
             {
@@ -57,7 +60,9 @@ namespace ProjectAllocationSystem.Services
 
             foreach (var user in users)
             {
+                appUsersCount++;
                 string securityStamp = Guid.NewGuid().ToString("N");
+                user.UserName = $"{user.FirstName}.{user.LastName}{appUsersCount}".ToLower();
                 user.NormalizedUserName = _normalizer.NormalizeName(user.UserName);
                 string password = Constants.DefaultPassword;
                 user.SecurityStamp = securityStamp;

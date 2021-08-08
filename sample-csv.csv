@@ -1,0 +1,4 @@
+FirstName,LastName,SchoolId,Role
+Test1,Lecturer,LEC24680,Lecturer
+Test2,Student,STU24680,Student
+Test3,Admin,ADM24680,Admin

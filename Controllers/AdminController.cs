@@ -83,7 +83,7 @@ namespace ProjectAllocationSystem.Controllers
                 {
                     applicationUsers = csv.GetRecords<ApplicationUserDTO>().ToList();
                 }
-                stream.Close();
+                stream.Close();                
 
                 await _adminService.BulkCreateUsers(applicationUsers);
                 return RedirectToAction("Index");

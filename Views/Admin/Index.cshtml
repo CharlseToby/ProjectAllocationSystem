@@ -11,7 +11,7 @@
         <div asp-validation-summary="All" class="text-danger"></div>
         <span>
             <a data-toggle="modal" data-target="#addUserModal" class="btn btn-primary">Add User</a>
-            <a data-toggle="modal" data-target="#exampleModal" class="btn btn-primary">Bulk Add Users</a>
+            <a data-toggle="modal" data-target="#bulkAddUsersModal" class="btn btn-primary">Bulk Add Users</a>
             <a data-toggle="modal" data-target="#addPrefModal" class="btn btn-primary">Add New Preference</a>
         </span>
     </div>
@@ -99,6 +99,31 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <button id="addPrefSubmit" type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form enctype="multipart/form-data" method="post" asp-action="BulkAddUsers">
+    <div class="modal fade" id="bulkAddUsersModal" tabindex="-1" role="dialog" aria-labelledby="bulkAddUsersLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bulkAddUsersLabel">Bulk Add Users</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Upload a CSV file</p>
+                    <div class="form-group">                        
+                        <input type="file" class="form-control-file" name="file" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button id="bulkAddUsersSubmit" type="submit" class="btn btn-primary">Upload</button>
                 </div>
             </div>
         </div>

@@ -26,6 +26,7 @@ namespace ProjectAllocationSystem.Services
             _timer?.Dispose();
         }
 
+        // Project Allocation job runs every 30 minutes
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _timer = new Timer(async o =>
@@ -34,7 +35,7 @@ namespace ProjectAllocationSystem.Services
             },
         null,
         TimeSpan.Zero,
-        TimeSpan.FromMinutes(5));
+        TimeSpan.FromMinutes(30));
 
             return Task.CompletedTask;
         }
