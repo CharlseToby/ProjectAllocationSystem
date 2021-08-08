@@ -10,6 +10,10 @@ namespace ProjectAllocationSystem.ViewModels.Lecturer
     public record IndexVM
     {                
         public List<AssignedStudent> AssignedStudents { get; set; }
+
+        public List<ProjectPreference> AllPreferences { get; set; }
+
+        public List<ProjectPreference> SelectedPreferences { get; set; }
     }
 
     public record AssignedStudent

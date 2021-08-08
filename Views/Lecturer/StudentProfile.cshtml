@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Student Profile";
-    string projectPreferences = string.Join(",", Model.ApplicationUser.ProjectPreferences);
+    string projectPreferences = string.Join(",", Model.ApplicationUser.ProjectPreferences.Select(x => x.Preference));
 }
 
 <div class="container">

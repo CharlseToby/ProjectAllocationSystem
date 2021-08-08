@@ -58,7 +58,9 @@ namespace ProjectAllocationSystem.Controllers
 
             var vm = new IndexVM
             {
-                AssignedStudents = assignedStudentsModel
+                AssignedStudents = assignedStudentsModel,
+                AllPreferences = await _dbContext.ProjectPreferences.ToListAsync(),
+                SelectedPreferences = lecturer.ProjectPreferences
             };
 
             return View(vm);
@@ -67,15 +69,34 @@ namespace ProjectAllocationSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> StudentProfile(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var student = await _userManager.FindByIdAsync(id);
             bool assignedToLecturer = _dbContext.LecturerStudentNodes.FirstOrDefault(x => x.StudentId == id) != null;
             var vm = new StudentProfileVM
             {
-                ApplicationUser = user,
+                ApplicationUser = student,
                 AssignedToLecturer = assignedToLecturer
             };
 
             return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ModifyPreferences(string[] selectedPreferences)
+        {
+            var lecturer = await _userManager.GetUserAsync(User);
+            var prefsToAdd = selectedPreferences.Where(x => !lecturer.ProjectPreferences.Select(x => x.Preference).Contains(x));
+            var prefsToRemove = lecturer.ProjectPreferences.Select(x => x.Preference).Where(x => !selectedPreferences.Contains(x));
+
+            var projectPrefsToAdd = await _dbContext.ProjectPreferences.Where(x => prefsToAdd.Contains(x.Preference))
+                .ToListAsync();
+            var projectPrefsToRemove = await _dbContext.ProjectPreferences.Where(x => prefsToRemove.Contains(x.Preference))
+                .ToListAsync();
+
+
+            lecturer.ProjectPreferences.AddRange(projectPrefsToAdd);
+            lecturer.ProjectPreferences.RemoveAll(x => projectPrefsToRemove.Contains(x));
+            await _userManager.UpdateAsync(lecturer);
+            return RedirectToAction("Index");
         }
     }
 }

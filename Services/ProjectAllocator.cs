@@ -78,6 +78,7 @@ namespace ProjectAllocationSystem.Services
                     }                    
                 }
                 await dbContext.LecturerStudentNodes.AddRangeAsync(lecturerStudentNodes);
+                await dbContext.SaveChangesAsync();
             }
         }
     }
