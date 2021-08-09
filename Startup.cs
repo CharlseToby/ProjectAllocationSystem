@@ -85,7 +85,6 @@ namespace ProjectAllocationSystem
             services.AddControllersWithViews();
 
             services.AddScoped<AdminService>();
-            services.AddScoped<Chat>();
             services.AddScoped<ProjectMatching>();
         }
 
