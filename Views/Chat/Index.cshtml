@@ -1,0 +1,20 @@
+﻿@using ProjectAllocationSystem.ViewModels.Chat
+@model IndexVM
+
+@{
+    ViewData["Title"] = "Student";
+    string chattingWith = Model.UserRole == Role.Lecturer ? Model.StudentName : Model.LecturerName;
+}
+
+<div class="container">
+    <div class="text-center">
+        <h3>Welcome to the Chatroom!</h3>
+        <br/>
+
+        <p> You're chatting with @chattingWith</p>
+    </div>
+
+    <div>
+
+    </div>
+</div>

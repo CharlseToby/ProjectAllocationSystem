@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectAllocationSystem.Data;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ProjectAllocationSystem.Controllers
 {
+    [Authorize]
     public class LecturerController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -97,6 +99,14 @@ namespace ProjectAllocationSystem.Controllers
             lecturer.ProjectPreferences.RemoveAll(x => projectPrefsToRemove.Contains(x));
             await _userManager.UpdateAsync(lecturer);
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChatStudent(string studentId)
+        {
+            //TODO: Add DB contraint to prevent duplicate students in LecturerStudentNode table
+            var node = await _dbContext.LecturerStudentNodes.FirstOrDefaultAsync(x => x.StudentId == studentId);
+            return RedirectToAction("Index", "Chat", new { nodeId = node.Id });
         }
     }
 }

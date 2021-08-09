@@ -26,6 +26,8 @@ namespace ProjectAllocationSystem
         public const string TestPreference1 = "Test Preference 1";
         public const string TestPreference2 = "Test Preference 2";
         public const string TestPreference3 = "Test Preference 3";
-
+        
+        public const string LecturerChatPrefix = "L";
+        public const string StudentChatPrefix = "S";
     }
 }

@@ -39,6 +39,7 @@
             <tbody>
                 @foreach (var student in Model.AssignedStudents)
                 {
+                    string preferenceMatch = string.Join(",", student.PreferenceMatch);
                     <tr>
                         <td>
                             @Html.DisplayFor(modelItem => student.Student.FirstName)
@@ -50,13 +51,13 @@
                             @Html.DisplayFor(modelItem => student.Student.SchoolId)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => student.PreferenceMatch)
+                            @Html.DisplayFor(modelItem => preferenceMatch)
                         </td>
                         <td>
                             <a asp-action="StudentProfile" asp-route-id="@student.Student.Id" class="btn btn-link">View Student</a>
                         </td>
                         <td>
-                            <button class="btn btn-primary">Choose</button>
+                            <a asp-action="ChatStudent" asp-route-studentId="@student.Student.Id" class="btn btn-primary">Chat</a>
                         </td>
                     </tr>
                 }

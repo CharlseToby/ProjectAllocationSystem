@@ -16,13 +16,13 @@ namespace ProjectAllocationSystem.Controllers
     [Authorize]
     public class StudentController : Controller
     {
-        private readonly ApplicationDbContext _applicationDbContext;
+        private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public StudentController(ApplicationDbContext applicationDbContext, 
             UserManager<ApplicationUser> userManager)
         {
-            _applicationDbContext = applicationDbContext;
+            _dbContext = applicationDbContext;
             _userManager = userManager;
         }
 
@@ -36,19 +36,19 @@ namespace ProjectAllocationSystem.Controllers
 
         private async Task<IndexVM> GetIndexViewModel(ApplicationUser user)
         {
-            string supervisorId = _applicationDbContext.LecturerStudentNodes.FirstOrDefault(x => x.StudentId == user.Id)?
+            string supervisorId = _dbContext.LecturerStudentNodes.FirstOrDefault(x => x.StudentId == user.Id)?
                 .LecturerId;
 
             var vm = new IndexVM
             {
                 FirstName = user.FirstName,
                 StudentPreferences = user.ProjectPreferences,
-                AllPreferences = await _applicationDbContext.ProjectPreferences.ToListAsync()
+                AllPreferences = await _dbContext.ProjectPreferences.ToListAsync()
             };
 
             if (supervisorId is not null)
             {
-                var supervisor = await _applicationDbContext.Users.FindAsync(supervisorId);
+                var supervisor = await _dbContext.Users.FindAsync(supervisorId);
                 vm.SupervisorId = supervisorId;
                 vm.SupervisorFirstName = supervisor.FirstName;
                 vm.SupervisorLastName = supervisor.LastName;
@@ -57,16 +57,25 @@ namespace ProjectAllocationSystem.Controllers
             return vm;
         }
 
+        [HttpPost]
         public async Task<IActionResult> ChoosePreferences(List<string> preferences)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var preferencesToAdd = await _applicationDbContext.ProjectPreferences.Where(x => preferences.Contains(x.Preference))
+            var preferencesToAdd = await _dbContext.ProjectPreferences.Where(x => preferences.Contains(x.Preference))
                 .ToListAsync();
             user.ProjectPreferences.AddRange(preferencesToAdd);
             await _userManager.UpdateAsync(user);
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChatSupervisor()
+        {
+            var student = await _userManager.GetUserAsync(User);
+            var node = await _dbContext.LecturerStudentNodes.FirstOrDefaultAsync(x => x.StudentId == student.Id);
+            return RedirectToAction("Index", "Chat", new { nodeId = node.Id });
         }
     }
 }
