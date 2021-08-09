@@ -33,4 +33,5 @@ function renderMessages() {
 
 $(window).on('load', function () {
     renderMessages();
+    setInterval(renderMessages, 60 * 1000);
 });
