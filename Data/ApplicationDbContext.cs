@@ -18,5 +18,14 @@ namespace ProjectAllocationSystem.Data
         public DbSet<ProjectPreference> ProjectPreferences { get; set; }
 
         public DbSet<LecturerStudentNode> LecturerStudentNodes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<LecturerStudentNode>()
+                .HasIndex(x => x.StudentId)
+                .IsUnique();
+        }
     }
 }
