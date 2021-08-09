@@ -4,17 +4,41 @@
 @{
     ViewData["Title"] = "Student";
     string chattingWith = Model.UserRole == Role.Lecturer ? Model.StudentName : Model.LecturerName;
+    var test = new List<string> { "Test1", "Test2", "Test3" };
 }
 
 <div class="container">
-    <div class="text-center">
-        <h3>Welcome to the Chatroom!</h3>
-        <br/>
-
-        <p> You're chatting with @chattingWith</p>
-    </div>
-
+    <input id="nodeId" value="@Model.NodeId" hidden />
     <div>
-
-    </div>
+        <div class="chat_window">
+            <div class="top_menu">
+                <div class="buttons">
+                    <div class="button close"></div>
+                    <div class="button minimize"></div>
+                    <div class="button maximize"></div>
+                </div>
+                <div class="title">Chat with @chattingWith</div>
+            </div>
+            <ul class="messages">
+                @*<partial model="@test" name="IndexPartial" />*@
+            </ul>
+            <div class="bottom_wrapper clearfix">
+                <div class="message_input_wrapper">
+                    <input class="message_input" placeholder="Type your message here..." />
+                </div>
+                <div class="send_message">
+                    <div class="icon"></div>
+                    <div id="sendMessage" onclick="sendMessage()" class="text">Send</div>
+                </div>
+            </div>
+        </div>
+    </div>    
 </div>
+
+@section Styles{
+    <link href="~/css/chat.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <script src="~/js/chat.js"></script>
+}

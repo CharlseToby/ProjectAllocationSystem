@@ -47,15 +47,24 @@ namespace ProjectAllocationSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> GetChats(int nodeId)
         {
-            var chat = (await _dbContext.LecturerStudentNodes.FindAsync(nodeId)).Chat;
-            return Ok(chat);
+            var node = await _dbContext.LecturerStudentNodes.FindAsync(nodeId);
+            var user = await _userManager.GetUserAsync(User);
+
+            var vm = new IndexPartialVM
+            {
+                Chat = node.Chat,
+                UserPrefix = user.Role == Role.Lecturer ? Constants.LecturerChatPrefix 
+                : Constants.StudentChatPrefix
+            };
+
+            return PartialView("IndexPartial", vm);
         }
         
         [HttpPost]
         public async Task<IActionResult> SendChat(int nodeId, string message)
         {
             var user = await _userManager.GetUserAsync(User);
-            string prefix = "";
+            string prefix;
 
             switch (user.Role)
             {

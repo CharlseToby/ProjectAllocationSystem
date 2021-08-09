@@ -1,0 +1,23 @@
+﻿@using ProjectAllocationSystem.ViewModels.Chat
+@model IndexPartialVM
+
+@foreach (var item in Model.Chat)
+{
+    string classToAdd = "";
+
+    if (Model.UserPrefix == item.Substring(0, 1))
+    {
+        classToAdd = "right";
+    }
+    else
+    {
+        classToAdd = "left";
+    }
+
+    <li class="message appeared @classToAdd">
+        <div class="avatar"></div>
+        <div class="text_wrapper">
+            <div class="text">@(item.Substring(1))</div>
+        </div>
+    </li>
+} 
