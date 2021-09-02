@@ -48,44 +48,52 @@ namespace ProjectAllocationSystem.Services
 
         async Task AllocateStudentsToLectures()
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
+            try
             {
-                var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-                if (configuration.GetValue<bool>("DB_MIGRATED", true))
+                using (var scope = _serviceScopeFactory.CreateScope())
                 {
-                    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                    var assignedStudentsId = dbContext.LecturerStudentNodes.Select(x => x.StudentId).ToList();
-                    var unassignedStudents = dbContext.Users
-                        .Where(x => x.Role == Role.Student)
-                        .Where(x => !assignedStudentsId.Contains(x.Id))
-                        .ToList();
-                    var lecturers = dbContext.Users
-                        .Where(x => x.Role == Role.Lecturer)
-                        .ToList();
-
-                    var lecturerStudentNodes = new List<LecturerStudentNode>();
-                    var random = new Random();
-
-                    for (int i = 0; i < unassignedStudents.Count; i++)
+                    var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+                    if (configuration.GetValue<bool>("DB_MIGRATED", true))
                     {
-                        var potentialSupervisors = lecturers.Where(x => x.ProjectPreferences.Any(y => unassignedStudents[i].ProjectPreferences.Contains(y)))
+                        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                        var assignedStudentsId = dbContext.LecturerStudentNodes.Select(x => x.StudentId).ToList();
+                        var unassignedStudents = dbContext.Users
+                            .Where(x => x.Role == Role.Student)
+                            .Where(x => !assignedStudentsId.Contains(x.Id))
                             .ToList();
-                        if (potentialSupervisors.Any())
+                        var lecturers = dbContext.Users
+                            .Where(x => x.Role == Role.Lecturer)
+                            .ToList();
+
+                        var lecturerStudentNodes = new List<LecturerStudentNode>();
+                        var random = new Random();
+
+                        for (int i = 0; i < unassignedStudents.Count; i++)
                         {
-                            int supervisorIndex = random.Next(0, potentialSupervisors.Count() - 1);
-                            var node = new LecturerStudentNode
+                            var potentialSupervisors = lecturers.Where(x => x.ProjectPreferences.Any(y => unassignedStudents[i].ProjectPreferences.Contains(y)))
+                                .ToList();
+                            if (potentialSupervisors.Any())
                             {
-                                LecturerId = potentialSupervisors[supervisorIndex].Id,
-                                StudentId = unassignedStudents[i].Id,
-                                Chat = new()
-                            };
-                            lecturerStudentNodes.Add(node);
+                                int supervisorIndex = random.Next(0, potentialSupervisors.Count() - 1);
+                                var node = new LecturerStudentNode
+                                {
+                                    LecturerId = potentialSupervisors[supervisorIndex].Id,
+                                    StudentId = unassignedStudents[i].Id,
+                                    Chat = new()
+                                };
+                                lecturerStudentNodes.Add(node);
+                            }
                         }
+                        await dbContext.LecturerStudentNodes.AddRangeAsync(lecturerStudentNodes);
+                        await dbContext.SaveChangesAsync();
                     }
-                    await dbContext.LecturerStudentNodes.AddRangeAsync(lecturerStudentNodes);
-                    await dbContext.SaveChangesAsync();
-                }                
+                }
             }
+            catch
+            {
+                // TODO: Log error
+                Console.WriteLine("Error during project allocation");
+            }            
         }
     }
 }
