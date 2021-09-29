@@ -31,7 +31,9 @@ namespace ProjectAllocationSystem.Controllers
         {
             var lecturer = await _userManager.GetUserAsync(User);
 
-            var assignedStudentsId = _dbContext.LecturerStudentNodes.Select(x => x.StudentId).ToList();
+            var assignedStudentsId = _dbContext.LecturerStudentNodes
+                .Where(x => x.LecturerId == lecturer.Id)
+                .Select(x => x.StudentId).ToList();
             var assignedStudents = _dbContext.Users
                 .Where(x => x.Role == Role.Student)
                 .Where(x => assignedStudentsId.Contains(x.Id))
