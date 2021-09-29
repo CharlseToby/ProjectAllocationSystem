@@ -48,8 +48,10 @@ namespace ProjectAllocationSystem
                 var pgPort = pgHostPort.Split(":")[1];
 
                 connectionString = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}";
-                connectionString += ";sslmode=Require;Trust Server Certificate=true;";
 
+#if RELEASE
+                connectionString += ";sslmode=Require;Trust Server Certificate=true;";
+#endif
                 options.UseLazyLoadingProxies();
                 options.UseNpgsql(connectionString);
             });
@@ -58,7 +60,7 @@ namespace ProjectAllocationSystem
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            #region Replacement for AddDefaultIdentity excluding DefaultUI
+#region Replacement for AddDefaultIdentity excluding DefaultUI
             services.AddMvc();
             //services.AddAuthentication(o =>
             //{
@@ -80,7 +82,7 @@ namespace ProjectAllocationSystem
                .AddDefaultTokenProviders()
                .AddSignInManager();
             services.AddTransient<IEmailSender, EmailSender>();
-            #endregion
+#endregion
             
             services.AddControllersWithViews();
 
