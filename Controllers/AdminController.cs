@@ -89,5 +89,25 @@ namespace ProjectAllocationSystem.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> AllUsers()
+        {
+            var users = await _dbContext.Users.ToListAsync();
+
+            var vm = new AllUsersVM
+            {
+                AllUsers = users.Select(x => new UserViewModel
+                {
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    Role = Enum.GetName(x.Role),
+                    UserName = x.UserName
+                })
+            };
+
+            return View(vm);
+        }
+
     }
 }

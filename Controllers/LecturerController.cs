@@ -105,8 +105,7 @@ namespace ProjectAllocationSystem.Controllers
 
         [HttpGet]
         public async Task<IActionResult> ChatStudent(string studentId)
-        {
-            //TODO: Add DB contraint to prevent duplicate students in LecturerStudentNode table
+        {            
             var node = await _dbContext.LecturerStudentNodes.FirstOrDefaultAsync(x => x.StudentId == studentId);
             return RedirectToAction("Index", "Chat", new { nodeId = node.Id });
         }
