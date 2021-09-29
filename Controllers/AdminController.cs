@@ -47,7 +47,7 @@ namespace ProjectAllocationSystem.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(string firstName, string lastName, string schoolId, string role)
         {            
-            await _adminService.CreateUser(firstName, lastName, schoolId, role);            
+            var user = await _adminService.CreateUser(firstName, lastName, schoolId, role);            
             return RedirectToAction("Index");
         }
 

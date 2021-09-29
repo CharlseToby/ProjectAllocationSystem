@@ -34,7 +34,7 @@ namespace ProjectAllocationSystem.Services
             {
                 FirstName = firstName,
                 LastName = lastName,
-                UserName = $"{firstName}.{lastName}{appUsersCount + 1}",
+                UserName = $"{firstName}.{lastName}{schoolId}",
                 SchoolId = schoolId,
                 Role = (Role)Enum.Parse(typeof(Role), role)
             };
